@@ -29,6 +29,21 @@ class LinebotController < ApplicationController
             xpath = 'weatherforecast/pref/area[4]/'
             # 当日朝のメッセージの送信の下限値は20％としているが、明日・明後日雨が降るかどうかの下限値は30％としている
             min_per = 30
+
+            news_url = 'https://www.nikkei.com/'
+            charset = nil
+            html = open(news_url) do |f|
+              charset = f.charset # 文字種別を取得
+              f.read # htmlを読み込んで変数htmlに渡す
+            end
+            # htmlをパース(解析)してオブジェクトを生成
+            doc_news = Nokogiri::HTML.parse(html, nil, charset)
+            doc_news.xpath('//h3[@class="m-miM07_title"]').each do |node|
+              #p node.css('h3').inner_text
+              #p node.css('a').inner_text
+              top_news_url = news_url+node.css('a').attribute('href').value
+            end
+
             case input
               # 「明日」or「あした」というワードが含まれる場合
             when /.*(明日|あした).*/
@@ -54,6 +69,8 @@ class LinebotController < ApplicationController
                 push =
                   "明後日の天気？\n気が早いねー！何かあるのかな。\n明後日は雨は降らない予定だよ(^^)\nまた当日の朝の最新の天気予報で雨が降りそうだったら教えるからね！"
               end
+            when /.*(ニュース|にゅーす).*/
+              push = top_news_url
             when /.*(かわいい|可愛い|カワイイ|きれい|綺麗|キレイ|素敵|ステキ|すてき|面白い|おもしろい|ありがと|すごい|スゴイ|スゴい|好き|頑張|がんば|ガンバ).*/
               push =
                 "ありがとう！！！\n優しい言葉をかけてくれるあなたはとても素敵です(^^)"

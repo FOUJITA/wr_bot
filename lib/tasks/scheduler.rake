@@ -21,6 +21,9 @@ task :update_feed => :environment do
   per06to12 = doc.elements[xpath + 'period[2]'].text
   per12to18 = doc.elements[xpath + 'period[3]'].text
   per18to24 = doc.elements[xpath + 'period[4]'].text
+  #本日の最高気温/最低気温
+  temp_max = doc.elements[xpath + 'info/temperature/range[1]'].text
+  temp_min = doc.elements[xpath + 'info/temperature/range[2]'].text
   # メッセージを発信する降水確率の下限値の設定
   min_per = 30
 
@@ -46,7 +49,7 @@ task :update_feed => :environment do
     end
     # 発信するメッセージの設定
     push =
-      "#{word1}\n#{word3}\n降水確率はこんな感じだよ。\n　  6〜12時　#{per06to12}％\n　12〜18時　 #{per12to18}％\n　18〜24時　#{per18to24}％\n#{word2}"
+      "#{word1}\n#{word3}\n最高気温は#{temp_max}度\n最低気温は#{temp_min}度\n降水確率はこんな感じだよ。\n　  6〜12時　#{per06to12}％\n　12〜18時　 #{per12to18}％\n　18〜24時　#{per18to24}％\n#{word2}"
     # メッセージの発信先idを配列で渡す必要があるため、userテーブルよりpluck関数を使ってidを配列で取得
     user_ids = User.all.pluck(:line_id)
     message = {
@@ -71,7 +74,7 @@ task :update_feed => :environment do
 
     # 発信するメッセージの設定
     push =
-      "おはよう！(^^)\n#{word1}\n降水確率はこんな感じだよ。\n　  6〜12時　#{per06to12}％\n　12〜18時　 #{per12to18}％\n　18〜24時　#{per18to24}％\n#{word2}"
+      "おはよう！(^^)\n#{word1}\n最高気温は#{temp_max}度\n最低気温は#{temp_min}度\n降水確率はこんな感じだよ。\n　  6〜12時　#{per06to12}％\n　12〜18時　 #{per12to18}％\n　18〜24時　#{per18to24}％\n#{word2}"
     user_ids = User.all.pluck(:line_id)
     message = {
       type: 'text',
