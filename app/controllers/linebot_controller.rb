@@ -38,9 +38,8 @@ class LinebotController < ApplicationController
             end
             # htmlをパース(解析)してオブジェクトを生成
             doc_news = Nokogiri::HTML.parse(html, nil, charset)
+            top_news_url = nil
             doc_news.xpath('//h3[@class="m-miM07_title"]').each do |node|
-              #p node.css('h3').inner_text
-              #p node.css('a').inner_text
               top_news_url = news_url+node.css('a').attribute('href').value
             end
 
