@@ -16,11 +16,12 @@ task :update_feed => :environment do
   xml  = open( url ).read.toutf8
   doc = REXML::Document.new(xml)
   # パスの共通部分を変数化（area[4]は「東京地方」を指定している）
-  xpath = 'weatherforecast/pref/area[4]/info/rainfallchance/'
+  #xpath = 'weatherforecast/pref/area[4]/info/rainfallchance/'
+  xpath = 'weatherforecast/pref/area[4]/'
   # 6時〜12時の降水確率（以下同様）
-  per06to12 = doc.elements[xpath + 'period[2]'].text
-  per12to18 = doc.elements[xpath + 'period[3]'].text
-  per18to24 = doc.elements[xpath + 'period[4]'].text
+  per06to12 = doc.elements[xpath + 'info/rainfallchance/period[2]'].text
+  per12to18 = doc.elements[xpath + 'info/rainfallchance/period[3]'].text
+  per18to24 = doc.elements[xpath + 'info/rainfallchance/period[4]'].text
   #本日の最高気温/最低気温
   temp_max = doc.elements[xpath + 'info/temperature/range[1]'].text
   temp_min = doc.elements[xpath + 'info/temperature/range[2]'].text
